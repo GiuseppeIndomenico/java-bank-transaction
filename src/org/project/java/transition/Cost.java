@@ -15,6 +15,6 @@ public class Cost extends Transition {
 
     @Override
     public String toString() {
-        return "description=" + getDescription() + ", money= -" + formatMoney() + " € ] \n";
+        return " descrizione= " + getDescription() + "\n importo= -" + formatMoney() + " €  \n";
     }
 }

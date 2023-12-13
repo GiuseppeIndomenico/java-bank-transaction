@@ -7,7 +7,7 @@ public abstract class Transition {
     private String description;
     private BigDecimal money;
 
-    public Transition(String description, BigDecimal money) {
+    public Transition(String description, BigDecimal money) throws IllegalArgumentException {
         setDescription(description);
         setMoney(money);
     }
@@ -16,7 +16,10 @@ public abstract class Transition {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(String description) throws IllegalArgumentException {
+        if (description == null || description.isBlank()) {
+            throw new IllegalArgumentException("La descrizione non può essere vuota o nullo.");
+        }
         this.description = description;
     }
 
@@ -24,12 +27,14 @@ public abstract class Transition {
         return money;
     }
 
-    public void setMoney(BigDecimal money) {
+    public void setMoney(BigDecimal money) throws IllegalArgumentException {
+        if (money == null || money.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("L'importo deve essere un valore positivo.");
+        }
         this.money = money;
     }
 
     public abstract BigDecimal changeCount(BigDecimal finalCount);
-    
     protected String formatMoney() {
         DecimalFormat df = new DecimalFormat("#0.00");
         return df.format(getMoney());
