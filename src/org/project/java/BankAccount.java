@@ -3,6 +3,7 @@ package org.project.java;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
 
@@ -44,7 +45,7 @@ public class BankAccount {
                         try {
                             String profitMoneyStr = sc.nextLine();
                             BigDecimal profitMoney = new BigDecimal(profitMoneyStr.trim());
-                            Profit profit = new Profit(profitDescription, profitMoney);
+                            Profit profit = new Profit(profitDescription, profitMoney, LocalDateTime.now());
                             transactions.add(profit);
                             finalCount = profit.changeCount(finalCount);
                            
@@ -62,7 +63,7 @@ public class BankAccount {
                         try {
                             String costMoneyStr = sc.nextLine();
                             BigDecimal costMoney = new BigDecimal(costMoneyStr.trim());
-                            Cost cost = new Cost(costDescription, costMoney);
+                            Cost cost = new Cost(costDescription, costMoney, LocalDateTime.now());
                                              transactions.add(cost);
                             finalCount = cost.changeCount(finalCount);
                         } catch (IllegalArgumentException e) {
@@ -76,7 +77,7 @@ public class BankAccount {
 
                         for (int i = 0; i < transactions.size(); i++) {
                             Transaction transaction = transactions.get(i);
-                            System.out.println("#" + (i + 1) + "- " + transaction);
+                            System.out.println("#" + (i + 1) + "-" + transaction);
                         }
                         break;
                     case 4:
@@ -86,7 +87,7 @@ public class BankAccount {
 
                     case 5:
                         System.out.println("Grazie per aver utilizzato il nostro servizio. Arrivederci!");
-                        TransactionManager.saveTransactionsToFile(transactions); // Aggiungi questa riga
+                        TransactionManager.saveTransactionsToFile(transactions);
                         System.exit(0);
                         break;
 
