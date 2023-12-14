@@ -1,48 +1,56 @@
-package org.project.java.transition;
+package org.project.java.transaction;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
-public abstract class Transition {
+public abstract class Transaction {
     private String description;
-    private BigDecimal money;
+    private BigDecimal amount;
+    private boolean isProfit; 
 
-    public Transition(String description, BigDecimal money) throws IllegalArgumentException {
+    public Transaction(String description, BigDecimal amount, boolean isProfit) {
         setDescription(description);
-        setMoney(money);
+        setAmount(amount);
+        setProfit(isProfit);
     }
-
     public String getDescription() {
         return description;
     }
-
     public void setDescription(String description) throws IllegalArgumentException {
         if (description == null || description.isBlank()) {
             throw new IllegalArgumentException("La descrizione non può essere vuota o nullo.");
         }
         this.description = description;
     }
-
-    public BigDecimal getMoney() {
-        return money;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setMoney(BigDecimal money) throws IllegalArgumentException {
-        if (money == null || money.compareTo(BigDecimal.ZERO) < 0) {
+    public void setAmount(BigDecimal amount) throws IllegalArgumentException {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("L'importo deve essere un valore positivo.");
         }
-        this.money = money;
+        this.amount = amount;
     }
-
+    public boolean isProfit() {
+    	return isProfit;
+    }
+    
+    
+    public void setProfit(boolean isProfit) {
+    	this.isProfit = isProfit;
+    }
     public abstract BigDecimal changeCount(BigDecimal finalCount);
     protected String formatMoney() {
         DecimalFormat df = new DecimalFormat("#0.00");
-        return df.format(getMoney());
+        return df.format(getAmount());
     }
 
     @Override
     public String toString() {
         return " descrizione= " + getDescription() + "\n importo= " + formatMoney() + " €  \n --- \n";
     }
+
+
 }
 

@@ -1,95 +1,102 @@
 package org.project.java;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import org.project.java.transition.Cost;
-import org.project.java.transition.Profit;
-import org.project.java.transition.Transition;
+import org.project.java.transaction.Cost;
+import org.project.java.transaction.Profit;
+import org.project.java.transaction.Transaction;
+import org.project.java.transaction.TransactionManager;
 
 public class BankAccount {
-	public static void main(String[] args) {
-		BigDecimal finalCount = BigDecimal.ZERO;
-		DecimalFormat df = new DecimalFormat("#0.00");
-		List<Transition> transitions = new ArrayList<>();
-		Scanner sc = new Scanner(System.in);
+    private static final TransactionManager transactionManager = new TransactionManager();
+    
+    public static void main(String[] args) throws IOException {
+        BigDecimal finalCount = BigDecimal.ZERO;
+        DecimalFormat df = new DecimalFormat("#0.00");
+        List<Transaction> transactions = TransactionManager.loadTransactionsFromFile();
+        Scanner sc = new Scanner(System.in);
 
-		System.out.println("Benvenuto nel tuo conto bancario!");
+        System.out.println("Benvenuto nel tuo conto bancario!");
 
-		while (true) {
-			try {
-				System.out.println("\n ------------------------");
-				System.out.println("1. Inserisci guadagno");
-				System.out.println("2. Inserisci spesa");
-				System.out.println("3. Visualizza tutte le transazioni");
-				System.out.println("4. Stampa saldo finale");
-				System.out.println("5. Esci");
+        while (true) {
+            try {
+                System.out.println("\n ------------------------");
+                System.out.println("1. Inserisci guadagno");
+                System.out.println("2. Inserisci spesa");
+                System.out.println("3. Visualizza tutte le transazioni");
+                System.out.println("4. Stampa saldo finale");
+                System.out.println("5. Esci");
 
-				int choice = sc.nextInt();
-				sc.nextLine(); // Consuma il newline residuo
+                int choice = sc.nextInt();
+                sc.nextLine(); // Consuma il newline residuo
 
-				switch (choice) {
-				case 1:
-				    System.out.println("\n ------------------------ \n");
-				    System.out.println("Inserisci la descrizione del guadagno: ");
-				    String profitDescription = sc.nextLine();
+                switch (choice) {
+                    case 1:
+                        System.out.println("\n ------------------------ \n");
+                        System.out.println("Inserisci la descrizione del guadagno: ");
+                        String profitDescription = sc.nextLine();
 
-				    System.out.println("Inserisci l'importo del guadagno: ");
-				    try {
-				        String profitMoneyStr = sc.nextLine();
-				        BigDecimal profitMoney = new BigDecimal(profitMoneyStr.trim());
-				        Profit profit = new Profit(profitDescription, profitMoney);
-				        transitions.add(profit);
-				        finalCount = profit.changeCount(finalCount);
-				    } catch (IllegalArgumentException e) {
-				        System.out.println("Errore: Inserisci un importo valido.");
-				    }
-				    break;
+                        System.out.println("Inserisci l'importo del guadagno: ");
+                        try {
+                            String profitMoneyStr = sc.nextLine();
+                            BigDecimal profitMoney = new BigDecimal(profitMoneyStr.trim());
+                            Profit profit = new Profit(profitDescription, profitMoney);
+                            transactions.add(profit);
+                            finalCount = profit.changeCount(finalCount);
+                           
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("Errore: Inserisci un importo valido.");
+                        }
+                        break;
 
-				case 2:
-				    System.out.println("\n ------------------------ \n");
-				    System.out.println("Inserisci la descrizione della spesa: ");
-				    String costDescription = sc.nextLine();
+                    case 2:
+                        System.out.println("\n ------------------------ \n");
+                        System.out.println("Inserisci la descrizione della spesa: ");
+                        String costDescription = sc.nextLine();
 
-				    System.out.println("Inserisci l'importo della spesa: ");
-				    try {
-				        String costMoneyStr = sc.nextLine();
-				        BigDecimal costMoney = new BigDecimal(costMoneyStr.trim());
-				        Cost cost = new Cost(costDescription, costMoney);
-				        transitions.add(cost);
-				        finalCount = cost.changeCount(finalCount);
-				    } catch (IllegalArgumentException e) {
-				        System.out.println("Errore: Inserisci un importo valido.");
-				    }
-				    break;
+                        System.out.println("Inserisci l'importo della spesa: ");
+                        try {
+                            String costMoneyStr = sc.nextLine();
+                            BigDecimal costMoney = new BigDecimal(costMoneyStr.trim());
+                            Cost cost = new Cost(costDescription, costMoney);
+                                             transactions.add(cost);
+                            finalCount = cost.changeCount(finalCount);
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("Errore: Inserisci un importo valido.");
+                        }
+                        break;
 
-				case 3:
-					System.out.println("\n ------------------------ \n");
-					System.out.println("Transazioni inserite: \n");
-					for (Transition transaction : transitions) {
-						System.out.println(transaction);
-					}
-					break;
-				case 4:
-					System.out.println("\n ------------------------ \n");
-					System.out.println("Saldo finale: " + df.format(finalCount) + " €");
-					break;
+                    case 3:
+                        System.out.println("\n ------------------------ \n");
+                        System.out.println("Transazioni inserite: \n");
 
-				case 5:
-					System.out.println("Grazie per aver utilizzato il nostro servizio. Arrivederci!");
-					System.exit(0);
-					break;
+                        for (int i = 0; i < transactions.size(); i++) {
+                            Transaction transaction = transactions.get(i);
+                            System.out.println("#" + (i + 1) + "- " + transaction);
+                        }
+                        break;
+                    case 4:
+                        System.out.println("\n ------------------------ \n");
+                        System.out.println("Saldo finale: " + df.format(finalCount) + " €");
+                        break;
 
-				default:
-					System.out.println("Scelta non valida. Riprova.");
-				}
-			} catch (java.util.InputMismatchException e) {
-				System.out.println("Errore: Inserisci un numero valido.");
-				sc.nextLine(); // Consuma l'input non valido
-			}
-		}
-	}
+                    case 5:
+                        System.out.println("Grazie per aver utilizzato il nostro servizio. Arrivederci!");
+                        TransactionManager.saveTransactionsToFile(transactions); // Aggiungi questa riga
+                        System.exit(0);
+                        break;
+
+                    default:
+                        System.out.println("Scelta non valida. Riprova.");
+                }
+            } catch (java.util.InputMismatchException e) {
+                System.out.println("Errore: Inserisci un numero valido.");
+                sc.nextLine(); // Consuma l'input non valido
+            }
+        }
+    }
 }
