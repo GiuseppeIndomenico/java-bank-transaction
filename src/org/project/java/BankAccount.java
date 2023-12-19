@@ -16,10 +16,18 @@ public class BankAccount {
     private static final TransactionManager transactionManager = new TransactionManager();
     
     public static void main(String[] args) throws IOException {
-        BigDecimal finalCount = BigDecimal.ZERO;
-        DecimalFormat df = new DecimalFormat("#0.00");
-        List<Transaction> transactions = TransactionManager.loadTransactionsFromFile();
-        Scanner sc = new Scanner(System.in);
+    	BigDecimal finalCount;
+    	List<Transaction> transactions = TransactionManager.loadTransactionsFromFile();
+    	if (!transactions.isEmpty()) {
+    	    finalCount = transactions.stream()
+    	            .map(transaction -> transaction.isProfit() ? transaction.getAmount() : transaction.getAmount().negate())
+    	            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    	} else {
+    	    finalCount = BigDecimal.ZERO;
+    	}
+
+    	DecimalFormat df = new DecimalFormat("#0.00");
+    	Scanner sc = new Scanner(System.in);
 
         System.out.println("Benvenuto nel tuo conto bancario!");
 

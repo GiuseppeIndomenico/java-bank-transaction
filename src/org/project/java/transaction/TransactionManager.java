@@ -16,7 +16,7 @@ public class TransactionManager {
 
 	public static void saveTransactionsToFile(List<Transaction> transactions) {
 	    try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
-	        System.out.println("Percorso del file: " + FILE_PATH);
+	        System.out.println("Percorso del file: " + FILE_PATH); //percorso di salvataggio del file 
 	        System.out.println("Numero di transazioni: " + transactions.size());
 	        for (Transaction transaction : transactions) {
 	            String formattedTimestamp = transaction.getTimestamp().toString();
